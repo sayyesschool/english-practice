@@ -16,8 +16,9 @@ const defaultExercise = {
     items: []
 };
 
-export default function ExerciseForm({ exercise = defaultExercise, onSubmit }) {
+export default function ExerciseForm({ exercise = defaultExercise, onSubmit, onClose }) {
     const [data, setData] = useState(() => ({
+        id: exercise.id,
         title: exercise.title || '',
         text: exercise.text || '',
         message: exercise.message || '',
@@ -49,6 +50,10 @@ export default function ExerciseForm({ exercise = defaultExercise, onSubmit }) {
 
     return (
         <Card outlined>
+            <Card.Header
+                title={exercise.id ? 'Редактирование упражнения' : 'Новое упражнение'}
+            />
+
             <Card.Section primary>
                 <TextField
                     name="title"
@@ -104,7 +109,11 @@ export default function ExerciseForm({ exercise = defaultExercise, onSubmit }) {
 
             <Card.Actions>
                 <Card.Action>
-                    <Button onClick={handleSubmit}>Сохранить</Button>
+                    <Button onClick={onClose}>Закрыть</Button>
+                </Card.Action>
+
+                <Card.Action>
+                    <Button onClick={handleSubmit} outlined>Сохранить</Button>
                 </Card.Action>
             </Card.Actions>
         </Card>
