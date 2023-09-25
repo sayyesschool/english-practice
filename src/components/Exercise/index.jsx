@@ -1,9 +1,18 @@
 import { useCallback, useState } from 'react';
+import classnames from 'classnames';
 
-import ExerciseContent from '../ExerciseContent';
-import ExerciseForm from '../ExerciseForm';
+import ExerciseContentCard from '../ExerciseContentCard';
+import ExerciseFormCard from '../ExerciseFormCard';
 
-import './index.css';
+import './index.scss';
+
+const classNameByType = {
+    boolean: 'boolean-exercise',
+    choice: 'choice-exercise',
+    text: 'text-exercise',
+    fib: 'fib-exercise',
+    essay: 'essay-exercise'
+};
 
 export default function Exercise({ exercise, onSubmit }) {
     const [isEditing, setEditing] = useState(false);
@@ -18,15 +27,18 @@ export default function Exercise({ exercise, onSubmit }) {
     }, []);
 
     return (
-        <div className="exercise">
+        <div className={classnames('exercise', classNameByType[exercise.type], {
+            'exercise--checked': isChecked,
+            [`${classNameByType[exercise.type]}--checked`]: isChecked
+        })}>
             {isEditing ? (
-                <ExerciseForm
+                <ExerciseFormCard
                     exercise={exercise}
                     onClose={handleEdit}
                     onSubmit={onSubmit}
                 />
             ) : (
-                <ExerciseContent
+                <ExerciseContentCard
                     exercise={exercise}
                     checked={isChecked}
                     onEdit={handleEdit}

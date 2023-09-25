@@ -1,0 +1,13 @@
+.text-exercise {
+    .text-exercise-item {
+        .mdc-text-field {
+            width: 100%;
+        }
+
+        .mdc-text-field--textarea {
+            .mdc-text-field__input {
+                height: 1.5rem;
+            }
+        }
+    }
+}

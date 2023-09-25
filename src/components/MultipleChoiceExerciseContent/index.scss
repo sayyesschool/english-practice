@@ -1,0 +1,13 @@
+.multiple-choice-exercise {
+
+}
+
+.multiple-choice-exercise--checked .mdc-list-item--correct .mdc-list-item__text {
+    color: forestgreen !important;
+    opacity: 1;
+}
+
+.multiple-choice-exercise--checked .mdc-list-item--incorrect .mdc-list-item__text {
+    color: firebrick !important;
+    opacity: 1;
+}

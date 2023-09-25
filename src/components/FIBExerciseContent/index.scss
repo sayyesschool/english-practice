@@ -1,0 +1,14 @@
+.fib-exercise {
+    .mdc-chip {
+        display: inline-flex;
+        vertical-align: middle;
+        border-radius: 5px;
+    }
+
+    .mdc-chip__text {
+        width: 100%;
+        min-width: 1rem;
+        outline: none;
+        text-align: center;
+    }
+}

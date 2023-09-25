@@ -1,43 +1,34 @@
+import { createElement } from 'react';
 import {
-    Button,
-    Card,
-    IconButton,
     Typography
 } from 'mdc-react';
 
-import ExerciseItem from '../ExerciseItem';
+import BooleanExerciseContent from '../BooleanExerciseContent';
+import ChoiceExerciseContent from '../ChoiceExerciseContent';
+import TextExerciseContent from '../TextExerciseContent';
+import FIBExerciseContent from '../FIBExerciseContent';
+import EssayExerciseContent from '../EssayExerciseContent';
 
-export default function ExerciseContent({ exercise, checked, onEdit, onCheck }) {
+import './index.scss';
+
+const ComponentsByType = {
+    boolean: BooleanExerciseContent,
+    choice: ChoiceExerciseContent,
+    text: TextExerciseContent,
+    fib: FIBExerciseContent,
+    essay: EssayExerciseContent
+};
+
+export default function ExerciseContent({ exercise, checked }) {
     return (
-        <Card className="exercise-content" outlined>
-            <Card.Header
-                title={exercise.title}
-                actions={
-                    <IconButton
-                        icon="edit"
-                        onClick={onEdit}
-                    />
-                }
-            />
+        <div className="exercise-content">
+            <Typography noMargin>{exercise.text}</Typography>
 
-            <Card.Section primary>
-                <Typography noMargin>{exercise.text}</Typography>
-            </Card.Section>
-
-            <Card.Section secondary>
-                {exercise.items.map(item =>
-                    <ExerciseItem
-                        item={item}
-                        checked={checked}
-                    />
-                )}
-            </Card.Section>
-
-            <Card.Actions>
-                <Card.Action>
-                    <Button onClick={onCheck} disabled={checked}>Проверить</Button>
-                </Card.Action>
-            </Card.Actions>
-        </Card>
+            {createElement(ComponentsByType[exercise.type], {
+                key: exercise.id,
+                exercise,
+                checked
+            })}
+        </div>
     );
 }

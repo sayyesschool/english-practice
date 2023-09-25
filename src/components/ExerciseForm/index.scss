@@ -1,0 +1,14 @@
+.exercise-form {
+    .mdc-card__actions {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .mdc-text-field,
+    .mdc-select {
+        + .mdc-text-field,
+        + .mdc-select {
+            margin-top: 16px;
+        }
+    }
+}

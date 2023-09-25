@@ -1,60 +1,98 @@
-import { useCallback, useState } from 'react';
+import { createElement, useCallback, useState } from 'react';
 import {
-    Button,
-    Card,
+    Layout,
+    Select,
     TextField
 } from 'mdc-react';
 
-import ExerciseItemForm from '../ExerciseItemForm';
+import BooleanExerciseForm from '../BooleanExerciseForm';
+import ChoiceExerciseForm from '../ChoiceExerciseForm';
+import TextExerciseForm from '../TextExerciseForm';
+import FIBExerciseForm from '../FIBExerciseForm';
+import EssayExerciseForm from '../EssayExerciseForm';
+
+import './index.scss';
+
+const ComponentsByType = {
+    boolean: BooleanExerciseForm,
+    choice: ChoiceExerciseForm,
+    text: TextExerciseForm,
+    fib: FIBExerciseForm,
+    essay: EssayExerciseForm
+};
+
+const typeOptions = [
+    {
+        key: 'null',
+        value: '',
+        text: ''
+    },
+    {
+        key: 'boolean',
+        value: 'boolean',
+        text: 'Да / Нет'
+    },
+    {
+        key: 'choice',
+        value: 'choice',
+        text: 'Выбор'
+    },
+    {
+        key: 'text',
+        value: 'text',
+        text: 'Текст'
+    },
+    {
+        key: 'fib',
+        value: 'fib',
+        text: 'Заполнить пробелы'
+    },
+    {
+        key: 'essay',
+        value: 'essay',
+        text: 'Эссэ'
+    }
+];
 
 const defaultExercise = {
+    type: '',
     title: '',
     text: '',
-    message: '',
-    incorrectMessage: '',
-    tip: '',
     items: []
 };
 
-export default function ExerciseForm({ exercise = defaultExercise, onSubmit, onClose }) {
+export default function ExerciseForm({ exercise = defaultExercise, onSubmit, ...props }) {
     const [data, setData] = useState(() => ({
         id: exercise.id,
+        type: exercise.type,
         title: exercise.title || '',
         text: exercise.text || '',
-        message: exercise.message || '',
-        incorrectMessage: exercise.incorrectMessage || '',
-        tip: exercise.tip || '',
         items: exercise.items || []
     }));
 
+    const handleSubmit = useCallback(() => {
+        onSubmit(data);
+    }, [data, onSubmit]);
+
     const handleChange = useCallback(event => {
+        event.persist();
+
         setData(data => ({
             ...data,
             [event.target.name]: event.target.value
         }));
     }, []);
 
-    const handleItemUpdate = useCallback(item => {
+    const handleUpdate = useCallback(exercise => {
         setData(data => ({
             ...data,
-            items: data.items.map(i => i.id !== item.id ? i : {
-                ...i,
-                ...item
-            })
+            ...exercise
         }));
     }, []);
 
-    const handleSubmit = useCallback(() => {
-        onSubmit(data);
-    }, [data, onSubmit]);
-
     return (
-        <Card outlined>
-            <Card.Header
-                title={exercise.id ? 'Редактирование упражнения' : 'Новое упражнение'}
-            />
-
-            <Card.Section primary>
+        <form className="exercise-form" onSubmit={handleSubmit} {...props}>
+            <Layout column>
                 <TextField
                     name="title"
                     label="Название"
@@ -72,50 +110,21 @@ export default function ExerciseForm({ exercise = defaultExercise, onSubmit, onC
                     onChange={handleChange}
                 />
 
-                <TextField
-                    name="message"
-                    label="Сообщение об ответе"
-                    value={data.message}
+                <Select
+                    name="type"
+                    label="Тип"
+                    value={data.type}
+                    options={typeOptions}
                     filled
-                    textarea
                     onChange={handleChange}
                 />
 
-                <TextField
-                    name="incorrectMessage"
-                    label="Сообщение о неправильном ответе"
-                    value={data.incorrectMessage}
-                    filled
-                    textarea
-                    onChange={handleChange}
-                />
-
-                <TextField
-                    name="tip"
-                    label="Подсказка"
-                    value={data.tip}
-                    filled
-                    textarea
-                    onChange={handleChange}
-                />
-
-                {data.items.map(item =>
-                    <ExerciseItemForm
-                        item={item}
-                        onUpdate={handleItemUpdate}
-                    />
-                )}
-            </Card.Section>
-
-            <Card.Actions>
-                <Card.Action>
-                    <Button onClick={onClose}>Закрыть</Button>
-                </Card.Action>
-
-                <Card.Action>
-                    <Button onClick={handleSubmit} outlined>Сохранить</Button>
-                </Card.Action>
-            </Card.Actions>
-        </Card>
+                {data.type && createElement(ComponentsByType[data.type], {
+                    key: exercise.id,
+                    exercise: data,
+                    onUpdate: handleUpdate
+                })}
+            </Layout>
+        </form>
     );
 }
